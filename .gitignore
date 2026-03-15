@@ -79,3 +79,8 @@ coverage.xml
 # Project memory (local only, contains tokens)
 # ============================================
 PROJECT_MEMORY.md
+
+# ============================================
+# Local scratch / planning files
+# ============================================
+*.txt
