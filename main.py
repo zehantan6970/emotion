@@ -32,7 +32,7 @@ from loguru import logger
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.utils import load_config, setup_logger
+from src.utils import load_config, setup_logger, SessionRecorder
 from src.vision import CameraCapture, VisionEmotionAnalyzer
 from src.audio import SpeechRecognizer, TextToSpeech, AudioEmotionAnalyzer
 from src.fusion import EmotionFusion
@@ -61,6 +61,7 @@ class EmotionAnalysisSystem:
         self.tts = TextToSpeech(aud_cfg)
         self.audio_emotion = AudioEmotionAnalyzer()
         self.fusion = EmotionFusion(fus_cfg)
+        self.session_recorder = SessionRecorder()  # structured session data
 
         self.show_window = cam_cfg.get("show_window", True)
         self.window_name = cam_cfg.get("window_name", "Emotion Analysis")
@@ -144,6 +145,17 @@ class EmotionAnalysisSystem:
                     fused = self.fusion.fuse(vision_result, audio_result)
                     last_vision_result = vision_result
 
+                    # Save structured session record
+                    if fused["confidence"] > 0:
+                        with self._audio_lock:
+                            speech_text = self._latest_speech_text
+                        self.session_recorder.record(
+                            fused_result=fused,
+                            vision_result=vision_result,
+                            audio_result=audio_result,
+                            speech_text=speech_text,
+                        )
+
                     # Console output
                     if self.console_output and fused["confidence"] > 0:
                         self._print_result(fused)
@@ -183,6 +195,7 @@ class EmotionAnalysisSystem:
         self._running = False
         self.camera.stop()
         self.speech_recognizer.stop()
+        self.session_recorder.close()  # flush & save session JSON
         if self.show_window:
             cv2.destroyAllWindows()
         logger.info("System stopped")

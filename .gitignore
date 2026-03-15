@@ -35,8 +35,19 @@ ENV/
 # ============================================
 # Logs & runtime data
 # ============================================
+# Runtime/debug logs: excluded (large, not useful for collaboration)
 logs/
 *.log
+
+# ============================================
+# Structured session data (emotion records)
+# ============================================
+# Keep data/ directory structure in git, but exclude actual session files
+# (they can be large; use git-lfs or keep locally)
+data/sessions/*.json
+data/sessions/*.csv
+# Allow the directory itself to be tracked
+!data/sessions/.gitkeep
 
 # ============================================
 # Model weights & large binary files
