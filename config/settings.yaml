@@ -1,0 +1,72 @@
+# ========================================
+# Emotion Analysis System Configuration
+# ========================================
+
+# Camera settings
+camera:
+  device_id: 0           # Camera device ID, 0 = default webcam
+  width: 640             # Video width
+  height: 480            # Video height
+  fps: 30                # Frame rate
+  show_window: true      # Show real-time video window
+  window_name: "Emotion Analysis - Live"
+
+# Audio settings
+audio:
+  sample_rate: 16000     # Sample rate
+  channels: 1            # Channels (mono)
+  chunk_size: 1024       # Frames per buffer read
+  record_seconds: 5      # Recording duration per segment (seconds)
+  language: "zh-CN"      # Speech recognition language
+  tts_rate: 150          # TTS speech rate (words/min)
+  tts_volume: 1.0        # TTS volume (0.0-1.0)
+
+# Vision emotion analysis settings
+vision_emotion:
+  backend: "deepface"    # Backend: deepface / fer
+  model_name: "VGG-Face" # Face recognition model (deepface)
+  detector_backend: "ssd"      # Face detector: ssd (recommended) / opencv / retinaface / mtcnn
+
+  emotion_labels:        # Emotion label mapping (English keys)
+    angry: "angry"
+    disgust: "disgust"
+    fear: "fear"
+    happy: "happy"
+    sad: "sad"
+    surprise: "surprise"
+    neutral: "neutral"
+  confidence_threshold: 0.15  # Confidence threshold (lower = more detections)
+
+# Audio emotion analysis settings
+audio_emotion:
+  model: "sentiment"     # Emotion analysis model
+  use_text_sentiment: true  # Perform sentiment analysis on recognized text
+
+# Multimodal fusion settings
+fusion:
+  vision_weight: 0.6     # Vision emotion weight
+  audio_weight: 0.4      # Audio emotion weight
+  smoothing_window: 5    # Temporal smoothing window size (frames)
+
+# Logging settings
+logging:
+  level: "INFO"          # Log level: DEBUG / INFO / WARNING / ERROR
+  log_dir: "logs"        # Log directory
+  max_size: "10 MB"      # Max single log file size
+  retention: "7 days"    # Log retention period
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}"
+
+# Output settings
+output:
+  display_on_screen: true    # Display emotion results on video
+  console_output: true       # Print results to console
+  save_log: true             # Save analysis log
+  analysis_interval: 1.0     # Emotion analysis interval (seconds)
+
+# Extension interface settings (reserved)
+extensions:
+  enable_api: false          # Enable REST API
+  api_host: "127.0.0.1"
+  api_port: 8080
+  enable_websocket: false    # Enable WebSocket push
+  enable_database: false     # Enable database storage
